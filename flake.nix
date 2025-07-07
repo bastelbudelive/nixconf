@@ -15,23 +15,34 @@
       url = "github:Gerg-L/spicetify-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    niri = {
+      url = "github:sodiboo/niri-flake";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    lix-module = {
+      url = "https://git.lix.systems/lix-project/nixos-module/archive/2.93.2-1.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs =
-    {
-      nixpkgs,
-      flake-utils,
-      treefmt-nix,
-      home-manager,
-      spicetify-nix,
-      ...
-    }:
-    let
-      hostName = "schlepptop";
-      userName = "schokopuddingg";
-      pkgs = import nixpkgs { system = "x86_64-linux"; config.allowUnfree = true; };
-    in
-
+  outputs = {
+    nixpkgs,
+    flake-utils,
+    treefmt-nix,
+    home-manager,
+    spicetify-nix,
+    niri,
+    lix-module,
+    ...
+  }: let
+    hostName = "schlepptop";
+    userName = "schokopuddingg";
+    pkgs = import nixpkgs {
+      system = "x86_64-linux";
+      config.allowUnfree = true;
+    };
+  in
     {
       nixosConfigurations = {
         "${hostName}" = nixpkgs.lib.nixosSystem {
@@ -39,6 +50,7 @@
           modules = [
             ./configuration.nix
             ./hardware-configuration.nix
+            lix-module.nixosModules.default
           ];
           specialArgs = {
             inherit hostName;
@@ -50,6 +62,7 @@
           pkgs = pkgs;
           modules = [
             spicetify-nix.homeManagerModules.default
+            niri.homeModules.niri
             ./home.nix
           ];
           extraSpecialArgs = {
@@ -63,7 +76,7 @@
       packages.default = home-manager.packages.${system}.default;
 
       formatter =
-        (treefmt-nix.lib.evalModule (import nixpkgs { inherit system; }) ./treefmt.nix)
+        (treefmt-nix.lib.evalModule (import nixpkgs {inherit system;}) ./treefmt.nix)
         .config.build.wrapper;
     });
 }
