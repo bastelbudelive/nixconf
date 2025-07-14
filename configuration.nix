@@ -6,7 +6,8 @@
   pkgs,
   hostName,
   ...
-}: {
+}:
+{
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -22,7 +23,8 @@
   boot.loader.grub.device = "/dev/sda";
   boot.loader.grub.useOSProber = true;
 
-  boot.initrd.luks.devices."luks-bed158c3-2240-49e5-aa94-fc270bd4cc88".device = "/dev/disk/by-uuid/bed158c3-2240-49e5-aa94-fc270bd4cc88";
+  boot.initrd.luks.devices."luks-bed158c3-2240-49e5-aa94-fc270bd4cc88".device =
+    "/dev/disk/by-uuid/bed158c3-2240-49e5-aa94-fc270bd4cc88";
   # Setup keyfile
   boot.initrd.secrets = {
     "/boot/crypto_keyfile.bin" = null;
@@ -30,8 +32,10 @@
 
   boot.loader.grub.enableCryptodisk = true;
 
-  boot.initrd.luks.devices."luks-443eaf18-a7c0-45cb-b4e9-ea4cfb011f3e".keyFile = "/boot/crypto_keyfile.bin";
-  boot.initrd.luks.devices."luks-bed158c3-2240-49e5-aa94-fc270bd4cc88".keyFile = "/boot/crypto_keyfile.bin";
+  boot.initrd.luks.devices."luks-443eaf18-a7c0-45cb-b4e9-ea4cfb011f3e".keyFile =
+    "/boot/crypto_keyfile.bin";
+  boot.initrd.luks.devices."luks-bed158c3-2240-49e5-aa94-fc270bd4cc88".keyFile =
+    "/boot/crypto_keyfile.bin";
   networking.hostName = hostName; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
@@ -67,12 +71,6 @@
   # Enable the KDE Plasma Desktop Environment.
   services.displayManager.sddm.enable = true;
   services.desktopManager.plasma6.enable = true;
-
-  # Configure keymap in X11
-  services.xserver.xkb = {
-    layout = "de";
-    variant = "";
-  };
 
   # Configure console keymap
   console.keyMap = "de";
@@ -141,16 +139,22 @@
     xserver = {
       enable = true;
 
+      xkb = {
+        layout = "de";
+        variant = "";
+      };
+
       windowManager.awesome = {
         enable = true;
         luaModules = with pkgs.luaPackages; [
-          luarocks # is the package manager for Lua modules
-          luadbi-mysql # Database abstraction layer
-          awesome-wm-widgets # Community collection of widgets
+          luarocks
+          luadbi-mysql
+          awesome-wm-widgets
         ];
       };
     };
   };
+
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [

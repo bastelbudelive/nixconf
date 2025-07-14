@@ -26,23 +26,25 @@
     };
   };
 
-  outputs = {
-    nixpkgs,
-    flake-utils,
-    treefmt-nix,
-    home-manager,
-    spicetify-nix,
-    niri,
-    lix-module,
-    ...
-  }: let
-    hostName = "schlepptop";
-    userName = "schokopuddingg";
-    pkgs = import nixpkgs {
-      system = "x86_64-linux";
-      config.allowUnfree = true;
-    };
-  in
+  outputs =
+    {
+      nixpkgs,
+      flake-utils,
+      treefmt-nix,
+      home-manager,
+      spicetify-nix,
+      niri,
+      lix-module,
+      ...
+    }:
+    let
+      hostName = "schlepptop";
+      userName = "schokopuddingg";
+      pkgs = import nixpkgs {
+        system = "x86_64-linux";
+        config.allowUnfree = true;
+      };
+    in
     {
       nixosConfigurations = {
         "${hostName}" = nixpkgs.lib.nixosSystem {
@@ -76,7 +78,7 @@
       packages.default = home-manager.packages.${system}.default;
 
       formatter =
-        (treefmt-nix.lib.evalModule (import nixpkgs {inherit system;}) ./treefmt.nix)
+        (treefmt-nix.lib.evalModule (import nixpkgs { inherit system; }) ./treefmt.nix)
         .config.build.wrapper;
     });
 }

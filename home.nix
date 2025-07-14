@@ -4,7 +4,8 @@
   userName,
   spicetify-nix,
   ...
-}: {
+}:
+{
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = userName;
@@ -87,12 +88,14 @@
       icons = "auto";
       git = true;
     };
-    spicetify = let
-      spicePkgs = spicetify-nix.legacyPackages.${pkgs.system};
-    in {
-      enable = true;
-      theme = spicePkgs.themes.catppuccin;
-    };
+    spicetify =
+      let
+        spicePkgs = spicetify-nix.legacyPackages.${pkgs.system};
+      in
+      {
+        enable = true;
+        theme = spicePkgs.themes.catppuccin;
+      };
   };
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
